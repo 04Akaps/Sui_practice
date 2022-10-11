@@ -70,6 +70,7 @@ module game::rock_paper_scissors {
     }
 
     public entry fun new_game(player_one : address, player_two : address, ctx : &mut TxContext){
+        // make new game
         transfer(Game {
             id : new(ctx),
             prize : ThePrize{id : new(ctx)},
@@ -108,6 +109,7 @@ module game::rock_paper_scissors {
         delete(id);
     }
 
+    // 
     public entry fun reveal(at :address, salt : vector<u8> , ctx : &mut TxContext){
         transfer( Secret {
             id : new(ctx),
