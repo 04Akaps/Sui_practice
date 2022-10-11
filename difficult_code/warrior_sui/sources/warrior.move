@@ -1,6 +1,6 @@
 module warrior_sui::warrior {
 
-    use sui::object::{UID, new};
+    use sui::object::{UID, new, delete};
     use sui::tx_context::{Self, TxContext, sender};
     use sui::transfer::{transfer, share_object};
 
@@ -113,7 +113,7 @@ module warrior_sui::warrior {
 
     // getters
 
-     public fun name(nft: &SuiWarriorNFT): &string::String {
+    public fun name(nft: &SuiWarriorNFT): &string::String {
         &nft.name
     }
 
@@ -210,7 +210,146 @@ module warrior_sui::warrior {
     }
 
     // Game Logic
-    entry fun battleAgainstBoss(boss : &Boss, nft : &mut SuiWarriorNFTm ctx : &mut TxContext){
-        // 
+    entry fun battleAgainstBoss(boss : &Boss, nft : &mut SuiWarriorNFT, ctx : &mut TxContext){
+        let playerWon = false;
+        let playerHp = nft.baseHealthPoints;
+        let playerAttack = nft.baseAttackPower + nft.baseSpellPower;
+
+        if(option::is_some(&nft.equippedWeapon)) {
+            let equippedWeapon = option::borrow(&nft.equippedWeapon);
+            playerAttack = playerAttack + equippedWeapon.attackPower + equippedWeapon.spellPower;
+            playerHp = playerHp + equippedWeapon.healthPoints;
+        };
+
+        let bossHp = boss.healthPoints;
+        let bossAttack = boss.attackPower + boss.spellPower;
+
+        if(playerAttack > bossHp - 20){
+            bossHp = 20;
+        }else{
+            bossHp = bossHp - playerAttack;
+        };
+
+        if(bossAttack > playerHp - 20){
+            playerHp = 20;
+        }else{
+            playerHp = playerHp - bossAttack;
+        };
+
+        let totalHp = bossHp + playerHp;
+        let rand = randNumber(ctx);
+        let result = rand % totalHp;
+
+        if(bossHp > playerHp){
+            if(result <= playerHp){
+                playerWon = true;
+            }
+        }else{
+            if(result > bossHp){
+                playerWon = true;
+            }
+        };
+
+        if(playerWon){
+            nft.experiencePoints = nft.experiencePoints + boss.experiencePointsReward;
+        };
     }
+
+    // weapon && use Points
+
+    entry fun useExperiencePoints(
+        nft : &mut SuiWarriorNFT, 
+        upgradeAttack : u64, 
+        upgradeSpell : u64, 
+        upgradeHealth : u64,
+        _ :&mut TxContext
+        ) 
+    {
+        assert!(nft.experiencePoints >= upgradeAttack + upgradeSpell + upgradeHealth, 0);
+        
+        nft.experiencePoints = nft.experiencePoints - (upgradeAttack + upgradeSpell + upgradeHealth);
+
+        nft.baseHealthPoints = nft.baseHealthPoints + upgradeHealth;
+        nft.baseSpellPower = nft.baseSpellPower + upgradeSpell;
+        nft.baseAttackPower = nft.baseAttackPower + upgradeAttack;
+    }
+
+    entry fun equipWeapon(
+        nft : &mut SuiWarriorNFT,
+        weapon : Weapon,
+        _ : &mut TxContext)
+    {   
+        assert!(!option::is_some(&nft.equippedWeapon), 0);
+        option::fill(&mut nft.equippedWeapon, weapon);
+    }
+
+    entry fun unequipWeapon(
+        nft : &mut SuiWarriorNFT,
+        ctx : &mut TxContext)
+    {   
+        assert!(option::is_some(&nft.equippedWeapon), 0);
+        let weapon = option::extract(&mut nft.equippedWeapon);
+        transfer(weapon, sender(ctx));
+    }
+
+    // transfer nft
+
+    entry fun transferWarrior(globalData : &NFTGlobalData, nft :SuiWarriorNFT, to : address, _: &mut TxContext){
+        assert!(!vector::contains(&globalData.mintedAddresses, &to), 0);
+        transfer(nft, to);
+    }
+
+    entry fun transferWeapon(weapon : Weapon , to : address, _ : &mut TxContext){
+        transfer(weapon, to);
+    }
+
+    entry fun burnNFT(nft : SuiWarriorNFT){
+        let SuiWarriorNFT {
+            id,
+            index : _,
+            name : _,
+            baseAttackPower: _,
+            baseSpellPower: _,
+            baseHealthPoints : _,
+            experiencePoints : _,
+            url : _,
+            equippedWeapon,
+        } = nft;
+
+        delete(id);
+
+        let weapon = option::destroy_some(equippedWeapon);
+
+        let Weapon {
+            id : weapon_id, 
+            name :_, 
+            attackPower : _, 
+            spellPower : _, 
+            healthPoints : _, 
+            url : _
+        } = weapon;
+
+        delete(weapon_id);
+    }
+
+    entry fun burnWeapon(weapon : Weapon, _ : &mut TxContext){
+        let Weapon { id, name : _, attackPower : _, spellPower : _, healthPoints : _, url : _} = weapon;
+
+        delete(id);
+    }
+
+    entry fun burnBoss(boss : Boss, _ownership : &Ownership, _ : &mut TxContext ){
+        let Boss {
+            id,
+            name: _,
+            attackPower: _,
+            spellPower: _,
+            healthPoints: _,
+            experiencePointsReward: _,
+            url: _
+        } = boss;
+
+        delete(id);
+    }
+
 }
