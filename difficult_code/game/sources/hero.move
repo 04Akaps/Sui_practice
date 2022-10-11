@@ -3,7 +3,8 @@ module game::hero {
     use sui::tx_context::{TxContext, sender};
     use sui::object::{UID, ID,new, uid_to_inner, id, delete};
     use sui::transfer::{freeze_object, transfer};
-    use sui::coin::{Coin, value};
+    use sui::coin::{Coin, value, balance_mut, take};
+    use sui::balance::{ Self, Balance, split, join, zero};
     use sui::sui::SUI;
     use sui::math;
     use sui::event;
@@ -12,7 +13,9 @@ module game::hero {
 
     const MAX_HP: u64 = 1000;
     const MAX_MAGIC: u64 = 10;
+    const MAX_POTION : u64  = 500;
     const MIN_SWORD_COST: u64 = 100;
+    const MIN_POTION_CONST : u64 = 120;
 
     const EMONSTER_WON: u64 = 0;
     const EHERO_TIRED: u64 = 1;
@@ -52,7 +55,8 @@ module game::hero {
 
     struct GameInfo has key {
         id : UID,
-        admin :address
+        admin :address,
+        wallet: Balance<SUI>
     }
 
     struct GameAdmin has key {
@@ -82,7 +86,8 @@ module game::hero {
 
         freeze_object(GameInfo {
             id : uid,
-            admin : sender
+            admin : sender,
+            wallet : zero<SUI>()
         });
 
         transfer(
@@ -97,16 +102,17 @@ module game::hero {
     }
 
     //  ---- acquire data ----
-
     public fun buy_sword (
-        game : &GameInfo,
-        payment : Coin<SUI>,
+        game : &mut GameInfo,
+        payment : &mut Coin<SUI>,
         ctx: &mut TxContext
     ) {
-        let value = value(&payment);
-
+        let value = value(payment);
         assert!(value >= MIN_SWORD_COST, EINSUFFICIENT_FUNDS);
-        transfer(payment, game.admin);
+
+        let mut_balance = balance_mut(payment);
+        let amount = split(mut_balance, value);
+        join(&mut game.wallet, amount);
 
         let magic = (value - MIN_SWORD_COST) / MIN_SWORD_COST;
 
@@ -119,6 +125,27 @@ module game::hero {
         };
 
         transfer(new_sword , sender(ctx));
+    }
+
+    public fun buy_potion (
+        game :  &mut GameInfo,
+        payment :&mut  Coin<SUI>,
+        ctx : &mut TxContext
+    ) {
+        let value = value(payment);
+        assert!(value >= MIN_SWORD_COST, EINSUFFICIENT_FUNDS);
+
+        let mut_balance = balance_mut(payment);
+        let amount = split(mut_balance, value);
+        join(&mut game.wallet, amount);
+
+        let new_potion = Potion {
+            id: new(ctx),
+            potency : math::min(value, MAX_POTION),
+            game_id : id(game)
+        };
+
+        transfer(new_potion, sender(ctx));
     }
 
     // created monster by Owner
@@ -222,6 +249,15 @@ module game::hero {
         sword.strength = sword.strength + amount;
     }
 
+    public fun heal(hero : &mut Hero, potion : Potion) {
+
+        let Potion  {id, potency, game_id : _} = potion;
+
+        delete(id);
+
+        hero.hp =math::min(hero.hp + potency, MAX_HP);
+    }
+
     // ---- check Function ----
 
     fun check_owner(admin : address, sender : address){
@@ -235,7 +271,20 @@ module game::hero {
     public fun sword_owner_check(s : &Sword, owner : address){
         assert!(s.owner == owner, 403);
     }
-  
 
+    fun withdraw(
+        game : &mut GameInfo,
+        ctx : &mut TxContext
+    ) {
+        assert!(game.admin == sender(ctx), 403);
+
+        let amount = balance::value(&game.wallet);
+
+        assert!(amount> 0, 402);
+
+        let coin = take(&mut game.wallet, amount, ctx);
+        
+        transfer(coin, sender(ctx));
+    }
 
 }
