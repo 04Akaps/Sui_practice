@@ -1,0 +1,44 @@
+2022-10-12T08:44:25.679280Z  INFO sui::client_commands: [1m----- Certificate ----[0m
+2022-10-12T08:44:25.680097Z  INFO sui::client_commands: Transaction Hash: I2dlC8XOe2lG+cnEQgStcK3ulGc1QactUqrFVAdkiCQ=
+2022-10-12T08:44:25.680110Z  INFO sui::client_commands: Transaction Signature: AA==@uLpkHYMLzzUQobsuXrDWc9uumpXmmth6l9b7VMCuRuhnqtVW9gnMUTaw0ZtLyGztmsqZSRD+69kQdWkUX5dkAg==@mGX170svpIu4ykK2Jahq8QSaQn+u/sYn4tM+S3JnqXY=
+2022-10-12T08:44:25.680117Z  INFO sui::client_commands: Signed Authorities Bitmap: RoaringBitmap<[0, 1, 2]>
+2022-10-12T08:44:25.680121Z  INFO sui::client_commands: Transaction Kind : Publish
+2022-10-12T08:44:25.680126Z  INFO sui::client_commands: [1m----- Transaction Effects ----[0m
+2022-10-12T08:44:25.680131Z  INFO sui::client_commands: Status : Success
+2022-10-12T08:44:25.680135Z  INFO sui::client_commands: Created Objects:
+2022-10-12T08:44:25.680139Z  INFO sui::client_commands:   - ID: 0xb0e284a1abb9994fa248ba282998889ca9c59964 , Owner: Shared
+2022-10-12T08:44:25.680144Z  INFO sui::client_commands:   - ID: 0xea7838b694d5a940c0bed2168b8e0ce861d5ba91 , Owner: Account Address ( 0x068d7785a28b0517b653cb93588e836e7c9fbbe9 )
+2022-10-12T08:44:25.680148Z  INFO sui::client_commands:   - ID: 0xedd51230de9499886e487bf3119706a2b2db7576 , Owner: Immutable
+2022-10-12T08:44:25.680153Z  INFO sui::client_commands: Mutated Objects:
+2022-10-12T08:44:25.680158Z  INFO sui::client_commands:   - ID: 0x0bb906f059876c63b4720d56d5c3944921483ea9 , Owner: Account Address ( 0x068d7785a28b0517b653cb93588e836e7c9fbbe9 )
+2022-10-12T08:44:25.680162Z  INFO sui::client_commands: [1m----- Publish Results ----[0m
+2022-10-12T08:44:25.680167Z  INFO sui::client_commands: [1mThe newly published package object ID: 0xedd51230de9499886e487bf3119706a2b2db7576
+2022-10-12T08:44:25.680171Z  INFO sui::client_commands: [0m
+2022-10-12T08:44:25.680175Z  INFO sui::client_commands: List of objects created by running module initializers:
+2022-10-12T08:44:25.680180Z  INFO sui::client_commands: [1m----- Move Object (0xb0e284a1abb9994fa248ba282998889ca9c59964[1]) -----[0m
+2022-10-12T08:44:25.680184Z  INFO sui::client_commands: [1;90mOwner[0m: Shared
+2022-10-12T08:44:25.680189Z  INFO sui::client_commands: [1;90mVersion[0m: 1
+2022-10-12T08:44:25.680193Z  INFO sui::client_commands: [1;90mStorage Rebate[0m: 31
+2022-10-12T08:44:25.680198Z  INFO sui::client_commands: [1;90mPrevious Transaction[0m: I2dlC8XOe2lG+cnEQgStcK3ulGc1QactUqrFVAdkiCQ=
+2022-10-12T08:44:25.680202Z  INFO sui::client_commands: [1m----- Data -----[0m
+2022-10-12T08:44:25.680207Z  INFO sui::client_commands: [1;90mtype[0m: 0xedd51230de9499886e487bf3119706a2b2db7576::warrior::NFTGlobalData
+2022-10-12T08:44:25.680211Z  INFO sui::client_commands: [1;90mbaseWarriorURL[0m: https://ipfs.io/ipfs/QmSrgtDKdUw4a9GVxWH3fSiVnFKX4ivtwvkZZiopWSwLNW/
+2022-10-12T08:44:25.680215Z  INFO sui::client_commands: [1;90mbaseWeaponURL[0m: https://ipfs.io/ipfs/QmUPTXn9KrK3x5dD4x2RH3t2fNk7LgUUjVyygR7CsPyk6L/
+2022-10-12T08:44:25.680222Z  INFO sui::client_commands: [1;90mid[0m: 0xb0e284a1abb9994fa248ba282998889ca9c59964
+2022-10-12T08:44:25.680226Z  INFO sui::client_commands: [1;90mmaxWarriorSupply[0m: 10000
+2022-10-12T08:44:25.680231Z  INFO sui::client_commands: [1;90mmintedAddresses[0m: []
+2022-10-12T08:44:25.680235Z  INFO sui::client_commands: [1;90mmintedwarriors[0m: 0
+2022-10-12T08:44:25.680239Z  INFO sui::client_commands: [1;90mmintingEnabled[0m: true
+2022-10-12T08:44:25.680244Z  INFO sui::client_commands: [1;90mowner[0m: 0x068d7785a28b0517b653cb93588e836e7c9fbbe9
+2022-10-12T08:44:25.680248Z  INFO sui::client_commands: 
+2022-10-12T08:44:25.680252Z  INFO sui::client_commands: [1m----- Move Object (0xea7838b694d5a940c0bed2168b8e0ce861d5ba91[1]) -----[0m
+2022-10-12T08:44:25.680257Z  INFO sui::client_commands: [1;90mOwner[0m: Account Address ( 0x068d7785a28b0517b653cb93588e836e7c9fbbe9 )
+2022-10-12T08:44:25.680261Z  INFO sui::client_commands: [1;90mVersion[0m: 1
+2022-10-12T08:44:25.680265Z  INFO sui::client_commands: [1;90mStorage Rebate[0m: 13
+2022-10-12T08:44:25.680274Z  INFO sui::client_commands: [1;90mPrevious Transaction[0m: I2dlC8XOe2lG+cnEQgStcK3ulGc1QactUqrFVAdkiCQ=
+2022-10-12T08:44:25.680279Z  INFO sui::client_commands: [1m----- Data -----[0m
+2022-10-12T08:44:25.680283Z  INFO sui::client_commands: [1;90mtype[0m: 0xedd51230de9499886e487bf3119706a2b2db7576::warrior::Ownership
+2022-10-12T08:44:25.680288Z  INFO sui::client_commands: [1;90mid[0m: 0xea7838b694d5a940c0bed2168b8e0ce861d5ba91
+2022-10-12T08:44:25.680292Z  INFO sui::client_commands: 
+2022-10-12T08:44:25.680296Z  INFO sui::client_commands: Updated Gas : Coin { id: 0x0bb906f059876c63b4720d56d5c3944921483ea9, value: 9997791 }
+2022-10-12T08:50:11.420881Z  INFO sui::client_commands: 0x068d7785a28b0517b653cb93588e836e7c9fbbe9

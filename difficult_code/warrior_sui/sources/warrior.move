@@ -257,7 +257,7 @@ module warrior_sui::warrior {
 
     // weapon && use Points
 
-    entry fun useExperiencePoints(
+    entry fun usePoints(
         nft : &mut SuiWarriorNFT, 
         upgradeAttack : u64, 
         upgradeSpell : u64, 
